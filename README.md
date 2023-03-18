@@ -3,6 +3,10 @@
 Usage:
 
 ```
+# Scan and show directories
+resticsync <scan_directory> 
+
+# Backup all directories
 resticsync <repository_path> <scan_directory>
 ```
 

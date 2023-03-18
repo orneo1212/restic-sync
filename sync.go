@@ -108,6 +108,15 @@ func Backup(repository_path string, backup_location string, excluded []string) {
 
 func main() {
 	args := os.Args[1:]
+	if len(args) == 1 {
+		dirs := Scan(args[0])
+		dirs = LookForFiles(dirs)
+		fmt.Println("Found", len(dirs), "directories to backup")
+		for _, dirpath := range dirs {
+			fmt.Println(dirpath)
+		}
+		os.Exit(0)
+	}
 	if len(args) >= 2 {
 		dirs := Scan(args[1])
 		dirs = LookForFiles(dirs)
@@ -123,6 +132,8 @@ func main() {
 			fmt.Println()
 		}
 	} else {
-		fmt.Println("Specify repository path and backup directory")
+		fmt.Println("Usage:")
+		fmt.Println("resticsync <scan_directory>")
+		fmt.Println("resticsync <repository_path> <backup_directory>")
 	}
 }
