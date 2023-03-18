@@ -111,15 +111,18 @@ func main() {
 	if len(args) >= 2 {
 		dirs := Scan(args[1])
 		dirs = LookForFiles(dirs)
-		if len(dirs) > 0 {
+		fmt.Println("Found", len(dirs), "directories to backup")
+		if len(dirs) > 0 && os.Getenv("RESTIC_PASSWORD") == "" {
 			password := PasswordPrompt("Repository password:")
 			os.Setenv("RESTIC_PASSWORD", password)
 		}
 		for index, dirpath := range dirs {
 			exclude := dirs[index+1:]
+			fmt.Println("Starting backup ", dirpath)
 			Backup(args[0], dirpath, exclude)
+			fmt.Println()
 		}
 	} else {
-		fmt.Println("specify repository path and backup directory")
+		fmt.Println("Specify repository path and backup directory")
 	}
 }
