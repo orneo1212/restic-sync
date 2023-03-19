@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -83,7 +84,14 @@ func PasswordPrompt(label string) string {
 	return s
 }
 
-func Backup(repository_path string, backup_location string, excluded []string) {
+func Backup(repository_path string, backup_location string, excluded []string) error {
+	// Check for empty dir
+	files, err := ioutil.ReadDir(backup_location)
+	if err != nil || len(files) == 0 {
+		fmt.Println("Skip empty directory ", backup_location)
+		return nil
+	}
+
 	config := read_config(backup_location)
 	// Create tag
 	tags := []string{"--tag=" + config.Id, "--tag=" + slug.Make(config.Name)}
@@ -103,5 +111,5 @@ func Backup(repository_path string, backup_location string, excluded []string) {
 	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin
 	c.Start()
-	c.Wait()
+	return c.Wait()
 }
