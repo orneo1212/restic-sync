@@ -105,35 +105,3 @@ func Backup(repository_path string, backup_location string, excluded []string) {
 	c.Start()
 	c.Wait()
 }
-
-func main() {
-	args := os.Args[1:]
-	if len(args) == 1 {
-		dirs := Scan(args[0])
-		dirs = LookForFiles(dirs)
-		fmt.Println("Found", len(dirs), "directories to backup")
-		for _, dirpath := range dirs {
-			fmt.Println(dirpath)
-		}
-		os.Exit(0)
-	}
-	if len(args) >= 2 {
-		dirs := Scan(args[1])
-		dirs = LookForFiles(dirs)
-		fmt.Println("Found", len(dirs), "directories to backup")
-		if len(dirs) > 0 && os.Getenv("RESTIC_PASSWORD") == "" {
-			password := PasswordPrompt("Repository password:")
-			os.Setenv("RESTIC_PASSWORD", password)
-		}
-		for index, dirpath := range dirs {
-			exclude := dirs[index+1:]
-			fmt.Println("Starting backup ", dirpath)
-			Backup(args[0], dirpath, exclude)
-			fmt.Println()
-		}
-	} else {
-		fmt.Println("Usage:")
-		fmt.Println("resticsync <scan_directory>")
-		fmt.Println("resticsync <repository_path> <backup_directory>")
-	}
-}
