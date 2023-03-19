@@ -4,7 +4,7 @@ Usage:
 
 ```
 # Scan and show directories
-resticsync <scan_directory> 
+resticsync <scan_directory>
 
 # Backup all directories
 resticsync <repository_path> <scan_directory>
@@ -29,5 +29,11 @@ All snapshots craeted using this tool will be tagged with Id, category and name 
 ```
 git clone https://github.com/orneo1212/restic-sync.git
 cd restic-sync/
-go build .
+go build -ldflags "-s -w" .
+```
+
+### Build for windows on linux
+
+```
+GOOS="windows" go build -ldflags "-s -w" .
 ```
