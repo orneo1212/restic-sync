@@ -22,6 +22,13 @@ func handle_info(cCtx *cli.Context) {
 func handle_backup(cCtx *cli.Context) {
 	repo_location := cCtx.Args().First()
 	backup_path := cCtx.Args().Get(1)
+
+	// When RESTIC_REPOSITORY is isset ignore first argument
+	if backup_path == "" && os.Getenv("RESTIC_REPOSITORY") != "" {
+		repo_location = os.Getenv("RESTIC_REPOSITORY")
+		backup_path = cCtx.Args().Get(0)
+	}
+
 	if repo_location == "" || backup_path == "" {
 		println("Specify repository path and backup_location")
 		return
