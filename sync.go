@@ -92,6 +92,13 @@ func Backup(repository_path string, backup_location string, excluded []string) e
 		return nil
 	}
 
+	// Find and exclude child directories
+	dirs := Scan(backup_location)
+	dirs = LookForFiles(dirs)
+	for index := range dirs {
+		excluded = append(excluded, dirs[index+1:]...)
+	}
+
 	config := read_config(backup_location)
 	// Create tag
 	tags := []string{"--tag=" + config.Id, "--tag=" + slug.Make(config.Name)}

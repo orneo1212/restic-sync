@@ -41,11 +41,8 @@ func handle_backup(cCtx *cli.Context) {
 		password := PasswordPrompt("Repository password:")
 		os.Setenv("RESTIC_PASSWORD", password)
 	}
-	for index, dirpath := range dirs {
-		exclude := dirs[index+1:]
-		fmt.Println("Starting backup ", dirpath)
-		Backup(repo_location, dirpath, exclude)
-		fmt.Println()
+	for _, dirpath := range dirs {
+		Backup(repo_location, dirpath, []string{})
 	}
 }
 
