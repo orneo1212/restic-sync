@@ -8,7 +8,7 @@ import (
 )
 
 func StartDaemon(scan_dirs []string, repo_location string) {
-	interval_minutes := 2 // minutes
+	interval_minutes := 120 // minutes
 	pool := pond.New(100, 1000, pond.MinWorkers(2))
 
 	fmt.Println("Starting backup daemon. Refresh time", interval_minutes, "minutes")
