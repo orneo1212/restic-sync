@@ -37,13 +37,23 @@ func handle_backup(cCtx *cli.Context) {
 	dirs := Scan(backup_path)
 	dirs = LookForFiles(dirs)
 	fmt.Println("Found", len(dirs), "directories to backup")
-	if len(dirs) > 0 && os.Getenv("RESTIC_PASSWORD") == "" {
-		password := PasswordPrompt("Repository password:")
-		os.Setenv("RESTIC_PASSWORD", password)
+	if len(dirs) > 0 {
+		GetRepositoryPassword()
 	}
 	for _, dirpath := range dirs {
+		fmt.Println("Start backing up ", dirpath)
 		Backup(repo_location, dirpath, []string{})
 	}
+}
+
+func handle_daemon(cCtx *cli.Context) {
+	repo_location := os.Getenv("RESTIC_REPOSITORY")
+	if repo_location == "" {
+		fmt.Fprintln(os.Stderr, "Environment varialble RESTIC_REPOSITORY must be set to start daemon")
+		os.Exit(1)
+	}
+	GetRepositoryPassword()
+	StartDaemon([]string{cCtx.Args().Get(0)}, repo_location)
 }
 
 func main() {
@@ -66,6 +76,16 @@ func main() {
 				Category: "informations",
 				Action: func(cCtx *cli.Context) error {
 					handle_info(cCtx)
+					return nil
+				},
+			},
+			{
+				Name:     "daemon",
+				Aliases:  []string{"i"},
+				Usage:    "Start backup daemon",
+				Category: "backup",
+				Action: func(cCtx *cli.Context) error {
+					handle_daemon(cCtx)
 					return nil
 				},
 			},

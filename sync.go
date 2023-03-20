@@ -84,6 +84,13 @@ func PasswordPrompt(label string) string {
 	return s
 }
 
+func GetRepositoryPassword() {
+	if os.Getenv("RESTIC_PASSWORD") == "" {
+		password := PasswordPrompt("Repository password:")
+		os.Setenv("RESTIC_PASSWORD", password)
+	}
+}
+
 func Backup(repository_path string, backup_location string, excluded []string) error {
 	// Check for empty dir
 	files, err := ioutil.ReadDir(backup_location)
