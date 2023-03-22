@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -14,7 +16,8 @@ func handle_info(cCtx *cli.Context) {
 	dirs = LookForFiles(dirs)
 	fmt.Println("Found", len(dirs), "directories to backup")
 	for _, dirpath := range dirs {
-		fmt.Println(dirpath)
+		config := read_config(dirpath)
+		fmt.Println(config.Id, dirpath)
 	}
 	os.Exit(0)
 }
@@ -57,6 +60,8 @@ func handle_daemon(cCtx *cli.Context) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	app := &cli.App{
 		Commands: []*cli.Command{
 			{
