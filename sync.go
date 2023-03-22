@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -92,6 +93,11 @@ func GetRepositoryPassword() {
 }
 
 func Backup(repository_path string, backup_location string, excluded []string) error {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("Backup of ", backup_location, "failed:\n", err)
+		}
+	}()
 	// Check for empty dir
 	files, err := ioutil.ReadDir(backup_location)
 	if err != nil || len(files) == 0 {
